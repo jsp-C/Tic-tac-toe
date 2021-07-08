@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="./default.css">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.3/css/all.css" integrity="sha384-SZXxX4whJ79/gErwcOYf+zWLeJdY/qpuqC4cAa9rOGUstPomtqpuNWT9wdPEn2fk" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <h1>Tic-Tac-Toe</h1>
+        <div class="playerSelector-container">
+            <div class="playerSelector__cross">
+                <img src="./cross.png" alt="" height="15px" width="15px">
+                <div class="score__cross">-</div>
+            </div>
+            <div class="playerSelector__circle">
+                <img src="./circle.png" alt="" height="15px" width="15px">
+                <div class="score__circle">-</div>
+            </div>
+        </div>
+        <div class="status-display">
+            Start game or select player  
+        </div>
+    </header>
+    <div class="container">
+        <div class="sub-container">
+            <div class="item item1"></div>
+            <div class="item item2"></div>
+            <div class="item item3"></div>
+        </div>
+        <div class="sub-container">
+            <div class="item item4"></div>
+            <div class="item item5"></div>
+            <div class="item item6"></div>
+        </div>
+        <div class="sub-container">
+            <div class="item item7"></div>
+            <div class="item item8"></div>
+            <div class="item item9"></div>
+        </div>
+        <div class="gameover win__cross">
+            <img src="./cross.png" alt="" height="100px" width="100px">
+            <h1 style="font-size: 3rem; color: rgb(73, 73, 73);">WINNER!</h1>
+        </div>
+        <div class="gameover win__circle">
+            <img src="./circle.png" alt="" height="100px" width="100px">
+            <h1 style="font-size: 3rem; color: rgb(73, 73, 73);">WINNER!</h1>
+        </div>
+        <div class="gameover draw">
+            <div>
+                <img src="./cross.png" alt="" height="100px" width="100px">
+                <img src="./circle.png" alt="" height="100px" width="100px">
+            </div>
+            <h1 style="font-size: 3rem; color: rgb(73, 73, 73);">DRAW!</h1>
+        </div>
+    </div>
+    <footer class="restart">
+        <h2>RESTART GAME</h2>
+    </footer>
+    <script src="./script.js"></script>
+</body>
+</html>
