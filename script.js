@@ -24,7 +24,7 @@ let score = {
 };
 
 let mode = "player";
-modeDisplay.textContent = mode;
+modeDisplay.innerText = mode;
 
 const winStates = [
     [0, 1, 2],
@@ -46,9 +46,10 @@ gameoverScreen.forEach((screen) =>
 );
 restartButton.addEventListener("click", hideEndScreen);
 
-function changeMode() {
+function changeMode(e) {
+    e.preventDefault();
     mode = mode === "AI" ? "player" : "AI";
-    modeDisplay.textContent = mode;
+    modeDisplay.innerText = mode;
     restartHandler();
 }
 
