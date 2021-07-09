@@ -5,6 +5,8 @@ const statusDisplay = document.querySelector(".status-display");
 const crossScore = document.querySelector(".score__cross");
 const circleScore = document.querySelector(".score__circle");
 const restartButton = document.querySelector(".restart");
+const modeButton = document.querySelector("#modebtn");
+const modeDisplay = document.querySelector("#mode");
 
 //EndGameScreen
 const gameoverScreen = document.querySelectorAll(".gameover");
@@ -21,6 +23,9 @@ let score = {
     circle: 0,
 };
 
+let mode = "player";
+modeDisplay.textContent = mode;
+
 const winStates = [
     [0, 1, 2],
     [3, 4, 5],
@@ -33,11 +38,19 @@ const winStates = [
 ];
 
 // Listeners
+modeButton.addEventListener("click", changeMode);
+
 boxes.forEach((box) => box.addEventListener("click", clickHandler));
 gameoverScreen.forEach((screen) =>
     screen.addEventListener("click", hideEndScreen)
 );
 restartButton.addEventListener("click", hideEndScreen);
+
+function changeMode() {
+    mode = mode === "AI" ? "player" : "AI";
+    modeDisplay.textContent = mode;
+    restartHandler();
+}
 
 // onClick boxes
 function clickHandler(e) {
@@ -50,11 +63,40 @@ function clickHandler(e) {
     ) {
         return;
     }
+
     e.target.classList.add(currentTurn);
+
+    gameStateChecker();
+    changePlayerTurn();
+    changeDisplayStatus();
+
+    if (mode === "AI") {
+        setTimeout(() => {
+            runAIMode();
+        }, 250);
+    }
+}
+
+function runAIMode() {
+    // find empty box
+    const emptyBoxes = [...boxes].flatMap((box, i) => {
+        return !box.classList.contains("circle") &&
+            !box.classList.contains("cross")
+            ? i
+            : [];
+    });
+    const numOfEmpty = emptyBoxes.length;
+    const randomPick = emptyBoxes[Math.floor(Math.random() * numOfEmpty)];
+    boxes.forEach((box, i) => {
+        i === randomPick ? box.classList.add(currentTurn) : null;
+    });
+
     gameStateChecker();
     changePlayerTurn();
     changeDisplayStatus();
 }
+
+function runPlayerMode(e) {}
 
 function gameStateChecker() {
     currentTurn_index = [...boxes].map((box, i) => {
