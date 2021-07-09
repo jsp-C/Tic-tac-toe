@@ -98,7 +98,7 @@ function runAIMode() {
     changeDisplayStatus();
 }
 
-function runHardAIMode() {
+function runMediumAIMode() {
     //find stakeholders' pick
     const playerPicks = [...boxes].flatMap((box, i) => {
         return box.classList.contains("cross") ? i : [];
@@ -196,6 +196,131 @@ function runHardAIMode() {
         //AI getting winning combination after 1 more pick
         const randomPick =
             winningPicks2nd[Math.floor(Math.random() * winningPicks2nd.length)];
+
+        boxes.forEach((box, i) => {
+            i === randomPick ? box.classList.add(currentTurn) : null;
+        });
+    } else if (winningPicks1st.length > 0) {
+        //AI getting winning combination after 2 more picks
+        const randomPick =
+            winningPicks1st[Math.floor(Math.random() * winningPicks1st.length)];
+
+        boxes.forEach((box, i) => {
+            i === randomPick ? box.classList.add(currentTurn) : null;
+        });
+    } else {
+        //AI place random pick
+        const randomPick =
+            emptyBoxes[Math.floor(Math.random() * emptyBoxes.length)];
+
+        boxes.forEach((box, i) => {
+            i === randomPick ? box.classList.add(currentTurn) : null;
+        });
+    }
+
+    gameStateChecker();
+    changePlayerTurn();
+    changeDisplayStatus();
+}
+
+function runHardAIMode() {
+    //find stakeholders' pick
+    const playerPicks = [...boxes].flatMap((box, i) => {
+        return box.classList.contains("cross") ? i : [];
+    });
+
+    const emptyBoxes = [...boxes].flatMap((box, i) => {
+        return !box.classList.contains("circle") &&
+            !box.classList.contains("cross")
+            ? i
+            : [];
+    });
+
+    const AIPicks = [...boxes].flatMap((box, i) => {
+        return box.classList.contains("circle") ? i : [];
+    });
+
+    //Counterpick method
+    const losingCombinations = winStates.filter((state) => {
+        return state.some((index) => playerPicks.includes(index));
+    });
+
+    const cautiousPickComb = losingCombinations.filter((comb) => {
+        return (
+            comb.reduce((acc, cur) => {
+                playerPicks.includes(cur) ? (acc += 1) : null;
+                AIPicks.includes(cur) ? (acc -= 1) : null;
+                return acc;
+            }, 0) === 2
+        );
+    });
+
+    const counterCautiousPicks = cautiousPickComb.flatMap((comb) => {
+        return comb.filter((index) => !playerPicks.includes(index));
+    });
+
+    // console.log("playerPicks", playerPicks);
+    // console.log("losingCombinations", losingCombinations);
+    // console.log("cautiousPickComb", cautiousPickComb);
+    console.log("counterCautiousPicks", counterCautiousPicks);
+
+    // Aggresive method
+
+    const winningCombinations = winStates.filter((state) => {
+        return (
+            state.some((index) => AIPicks.includes(index)) &&
+            state.every((index) => !playerPicks.includes(index))
+        );
+    });
+
+    const winningPickComb1st = winningCombinations.filter((comb) => {
+        return (
+            comb.reduce((acc, cur) => {
+                AIPicks.includes(cur) ? (acc += 1) : null;
+                return acc;
+            }, 0) === 1
+        );
+    });
+
+    const winningPicks1st = winningPickComb1st.flatMap((comb) => {
+        return comb.filter((index) => !AIPicks.includes(index));
+    });
+
+    const winningPickComb2nd = winningCombinations.filter((comb) => {
+        return (
+            comb.reduce((acc, cur) => {
+                AIPicks.includes(cur) ? (acc += 1) : null;
+                return acc;
+            }, 0) === 2
+        );
+    });
+
+    const winningPicks2nd = winningPickComb2nd.flatMap((comb) => {
+        return comb.filter((index) => !AIPicks.includes(index));
+    });
+
+    // console.log("emptyBoxes", emptyBoxes);
+    // console.log("AIPicks", AIPicks);
+    // console.log("winningCombinations", winningCombinations);
+    console.log("winningPicks1st", winningPicks1st);
+    console.log("winningPicks2nd", winningPicks2nd);
+
+    //Random method
+
+    if (winningPicks2nd.length > 0) {
+        //AI getting winning combination after 1 more pick
+        const randomPick =
+            winningPicks2nd[Math.floor(Math.random() * winningPicks2nd.length)];
+
+        boxes.forEach((box, i) => {
+            i === randomPick ? box.classList.add(currentTurn) : null;
+        });
+    } else if (counterCautiousPicks.length > 0) {
+        //player getting winning combination
+        const randomPick =
+            counterCautiousPicks[
+                Math.floor(Math.random() * counterCautiousPicks.length)
+            ];
 
         boxes.forEach((box, i) => {
             i === randomPick ? box.classList.add(currentTurn) : null;
