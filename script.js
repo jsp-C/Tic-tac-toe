@@ -23,6 +23,7 @@ const drawScreen = document.querySelector(".draw")
 // Game State
 const crossTurn = CLASS_CROSS
 const circleTurn = CLASS_CIRCLE
+let isLoading = false
 let currentTurn = crossTurn
 let isEnd = false
 let score = { cross: 0, circle: 0 }
@@ -58,19 +59,22 @@ function changeMode(e) {
 }
 
 // Handle Box Click
-function clickHandler(e) {
+async function clickHandler(e) {
+	if (isLoading) return
+	isLoading = true
 	e.preventDefault()
 
 	if (isInvalidClick(e.target)) return
 
 	e.target.classList.add(currentTurn)
-	gameStateChecker()
+	await gameStateChecker()
 	changePlayerTurn()
 	changeDisplayStatus()
 
 	if (mode === "AI" && currentTurn === circleTurn) {
 		setTimeout(runHardAIMode, 500)
 	}
+	isLoading = false
 }
 
 // Check if Click is Invalid
@@ -84,11 +88,11 @@ function isInvalidClick(target) {
 }
 
 // Run AI Mode (Random)
-function runAIMode() {
+async function runAIMode() {
 	const randomPick = getRandomEmptyBox()
 	if (randomPick !== null) {
 		boxes[randomPick].classList.add(currentTurn)
-		gameStateChecker()
+		await gameStateChecker()
 		changePlayerTurn()
 		changeDisplayStatus()
 	}
@@ -113,7 +117,7 @@ function getEmptyBoxes() {
 }
 
 // Run Hard AI Mode
-function runHardAIMode() {
+async function runHardAIMode() {
 	const playerPicks = getPlayerPicks(CLASS_CROSS)
 	const AIPicks = getPlayerPicks(CLASS_CIRCLE)
 	const emptyBoxes = getEmptyBoxes()
@@ -124,7 +128,7 @@ function runHardAIMode() {
 	const pick = winningPick || counterPick || getRandomEmptyBox()
 	if (pick !== null) {
 		boxes[pick].classList.add(currentTurn)
-		gameStateChecker()
+		await gameStateChecker()
 		changePlayerTurn()
 		changeDisplayStatus()
 	}
@@ -177,19 +181,32 @@ function getWinningPick(AIPicks, playerPicks) {
 }
 
 // Check Game State
-function gameStateChecker() {
-	const currentTurnIndexes = getPlayerPicks(currentTurn)
-	const isWon = winStates.some((state) =>
-		state.every((index) => currentTurnIndexes.includes(index))
-	)
-	const isDraw = [...boxes].every(
-		(box) =>
-			box.classList.contains(CLASS_CROSS) ||
-			box.classList.contains(CLASS_CIRCLE)
-	)
+async function gameStateChecker() {
+	return new Promise((resolve) => {
+		const currentTurnIndexes = getPlayerPicks(currentTurn)
+		const isWon = winStates.some((state) =>
+			state.every((index) => currentTurnIndexes.includes(index))
+		)
+		const isDraw = [...boxes].every(
+			(box) =>
+				box.classList.contains(CLASS_CROSS) ||
+				box.classList.contains(CLASS_CIRCLE)
+		)
 
-	if (isWon) handleWin()
-	else if (isDraw && !isWon) handleDraw()
+		if (isWon) {
+			setTimeout(() => {
+				handleWin()
+				resolve()
+			}, 500)
+		} else if (isDraw && !isWon) {
+			setTimeout(() => {
+				handleDraw()
+				resolve()
+			}, 500)
+		} else {
+			resolve()
+		}
+	})
 }
 
 // Handle Win
