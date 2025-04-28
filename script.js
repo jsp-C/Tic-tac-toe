@@ -60,9 +60,9 @@ function changeMode(e) {
 
 // Handle Box Click
 async function clickHandler(e) {
+	e.preventDefault()
 	if (isLoading) return
 	isLoading = true
-	e.preventDefault()
 
 	if (isInvalidClick(e.target)) return
 
