@@ -120,8 +120,6 @@ function getEmptyBoxes() {
 async function runHardAIMode() {
 	const playerPicks = getPlayerPicks(CLASS_CROSS)
 	const AIPicks = getPlayerPicks(CLASS_CIRCLE)
-	const emptyBoxes = getEmptyBoxes()
-
 	const counterPick = getCounterPick(playerPicks, AIPicks)
 	const winningPick = getWinningPick(AIPicks, playerPicks)
 
